@@ -7,43 +7,42 @@ trigger:
 resources:
   - repo: self
 
+
 # 2. Variables del entorno
 variables:
-  # El nombre de la conexión de servicio en Azure DevOps hacia tu ACR
-  dockerRegistryServiceConnection: 'registryConnection'
-  
-  # El nombre de tu repositorio de imágenes en ACR
-  imageRepository: 'luisvm28/test-page'
-  
-  # La URL de tu Azure Container Registry
-  containerRegistry: 'acrtestpage.azurecr.io'
-  
-  # Ruta al Dockerfile que creamos anteriormente
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  
-  # Etiqueta para la imagen (usamos el ID del build para versionado único)
-  tag: '$(Build.BuildId)'
+  - group: CICD
+  - name: appVersion
+    value: $[variables.appVersion]
 
-# Agente donde se ejecutará el trabajo (un entorno Linux limpio)
-pool:
-  vmImage: 'ubuntu-latest'
+parameters:
+  - name: tag 
+    default: '$(Build.BuildId)'
+  - name: imageName
+    default: 'test-page' 
 
 stages:
 - stage: Build
-  displayName: Construir y Subir Imagen
+  displayName: Build image
   jobs:
   - job: Build
-    displayName: Construcción de Docker
+    displayName: Build
+    pool: local-agent
+
     steps:
-    
-    # 3. Construir y Subir (Build and Push) utilizando la tarea nativa de Docker
     - task: Docker@2
-      displayName: 'Construir la imagen y subirla a ACR'
+      displayName: Build an image
       inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
-          latest
+        repository: ${{ parameters.imageName }}
+        command: build
+        dockerfile: '**/Dockerfile'
+        tags: ${{ parameters.tag }}
+        arguments: '--build-arg VERSION="$(appVersion)"'
+        containerRegistry: registryConnection
+
+    - task: Docker@2
+      displayName: Push to ACR
+      inputs:
+        command: Push
+        containerRegistry: registryConnection
+        repository: ${{ parameters.imageName }}
+        tags: ${{ parameters.tag }}

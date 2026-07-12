@@ -1,0 +1,48 @@
+# 1. Trigger: Se ejecuta automáticamente al hacer cambios en la rama 'main'
+trigger:
+  - main
+
+# Define que usaremos el repositorio actual
+resources:
+  - repo: self
+
+# 2. Variables del entorno
+variables:
+  # El nombre de la conexión de servicio en Azure DevOps hacia tu ACR
+  dockerRegistryServiceConnection: 'registryConnection'
+  
+  # El nombre de tu repositorio de imágenes en ACR
+  imageRepository: 'luisvm28/test-page'
+  
+  # La URL de tu Azure Container Registry
+  containerRegistry: 'acrtestpage.azurecr.io'
+  
+  # Ruta al Dockerfile que creamos anteriormente
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  
+  # Etiqueta para la imagen (usamos el ID del build para versionado único)
+  tag: '$(Build.BuildId)'
+
+# Agente donde se ejecutará el trabajo (un entorno Linux limpio)
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Construir y Subir Imagen
+  jobs:
+  - job: Build
+    displayName: Construcción de Docker
+    steps:
+    
+    # 3. Construir y Subir (Build and Push) utilizando la tarea nativa de Docker
+    - task: Docker@2
+      displayName: 'Construir la imagen y subirla a ACR'
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+          latest

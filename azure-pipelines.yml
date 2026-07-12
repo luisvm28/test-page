@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # 1. Trigger: Se ejecuta automáticamente al hacer cambios en la rama 'main'
 trigger:
   - main
@@ -47,6 +47,3 @@ stages:
         tags: |
           $(tag)
           latest
-=======
-test 
->>>>>>> 4b8c1a1c09f45fbe2b29f726a5e6070747b42709

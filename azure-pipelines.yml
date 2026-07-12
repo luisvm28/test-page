@@ -46,3 +46,4 @@ stages:
         containerRegistry: registryConnection
         repository: ${{ parameters.imageName }}
         tags: ${{ parameters.tag }} 
+        

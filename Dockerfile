@@ -5,4 +5,4 @@ FROM nginx:alpine
 COPY index.html /usr/share/nginx/html/index.html
 
 # Paso 3: Exponer el puerto 80 (el puerto por defecto de Nginx)
-EXPOSE 80
+EXPOSE 3001

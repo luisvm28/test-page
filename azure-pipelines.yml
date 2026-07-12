@@ -45,6 +45,6 @@ stages:
         command: Push
         containerRegistry: registryConnection
         repository: ${{ parameters.imageName }}
-        tags: ${{ parameters.tag }}
-        
+        tags: ${{ parameters.tag }} 
 
+   

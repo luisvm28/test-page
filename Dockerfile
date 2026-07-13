@@ -1,8 +1,11 @@
 # Paso 1: Usar la imagen oficial de Nginx basada en Alpine Linux
 FROM nginx:alpine
 
-# Paso 2: Copiar el archivo index.html de nuestra máquina al directorio que Nginx usa para servir contenido
+# Paso 2: Cambiar el puerto por defecto (80) a 3001 en la configuración de Nginx
+RUN sed -i 's/listen  .*80;/listen 3001;/g' /etc/nginx/conf.d/default.conf
+
+# Paso 3: Copiar el archivo index.html al directorio de Nginx
 COPY index.html /usr/share/nginx/html/index.html
 
-# Paso 3: Exponer el puerto 80 (el puerto por defecto de Nginx)
+# Paso 4: Exponer el puerto 3001
 EXPOSE 3001

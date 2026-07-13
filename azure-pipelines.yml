@@ -56,7 +56,7 @@ stages:
 
         inputs:
           azureSubscription: 'appDeployConnection'
-          imageToDeploy: acrappsluis.azurecr.io/${{ parameters.imageName }}:${{ parameters.tag }}
+          imageToDeploy: acrtestpage.azurecr.io/${{ parameters.imageName }}:${{ parameters.tag }}
 
           containerAppName: 'app-test-page' # NOMBRE DEL CONTAINER APP
           resourceGroup: rg-devops
